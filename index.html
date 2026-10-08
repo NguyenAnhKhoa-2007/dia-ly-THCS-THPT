@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ĐỊA LÝ HỌC - THCS & THPT</title>
+    <style>
+        :root {
+            --bg-dark: #0a1913;
+            --card-dark: #0f231b;
+            --header-bg: #005a36;
+            --accent-green: #2ecc71;
+            --accent-mint: #25c99e;
+            --text-light: #e0e6e3;
+            --text-sub: #a0b2a8;
+            --border-color: #1a3a2d;
+            --input-bg: #07130e;
+            --warning-red: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding-bottom: 50px;
+        }
+
+        .sticky-progress-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #06140e;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: none; 
+        }
+
+        .tracker-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent-mint);
+            min-width: 140px;
+        }
+
+        .timer-box.warning {
+            color: var(--warning-red);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .progress-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            height: 10px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-mint);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--text-sub);
+            white-space: nowrap;
+        }
+
+        /* Banner Header */
+        .top-banner {
+            background-color: var(--header-bg);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .top-banner h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .top-banner p {
+            color: #d1e8dd;
+            font-size: 15px;
+        }
+
+
+        .main-container {
+            max-width: 900px;
+            margin: 25px auto 0;
+            padding: 0 15px;
+        }
+
+        /* Tabs chuyển đổi */
+        .nav-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-dark);
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-mint);
+            color: #04140d;
+            border-color: var(--accent-mint);
+        }
+
+
+        .card-box {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .card-box h3 {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-mint);
+        }
+
+        .info-desc {
+            color: var(--text-sub);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .btn-green {
+            background-color: var(--accent-mint);
+            color: #04140d;
+            border: none;
+            padding: 12px 28px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-green:hover {
+            opacity: 0.9;
+        }
+
+
+        .section-header {
+            color: var(--accent-mint);
+            font-size: 18px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin: 30px 0 15px;
+        }
+
+        .question-card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: var(--input-bg);
+            border: 1px solid transparent;
+        }
+
+        .option-item:hover {
+            border-color: var(--border-color);
+        }
+
+
+        .tf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .tf-table th, .tf-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .tf-table th {
+            background-color: var(--input-bg);
+            color: var(--accent-mint);
+        }
+
+        .tf-table td.center {
+            text-align: center;
+            width: 70px;
+        }
+
+
+        table.matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        table.matrix-table th, table.matrix-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: center;
+        }
+
+        table.matrix-table th {
+            background-color: var(--input-bg);
+            color: var(--accent-mint);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+
+        .result-panel {
+            display: none;
+            background-color: var(--card-dark);
+            border: 2px solid var(--accent-mint);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-score {
+            font-size: 22px;
+            color: var(--accent-mint);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .result-details {
+            line-height: 1.7;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="sticky-tracker" class="sticky-progress-bar">
+        <div class="tracker-container">
+            <div id="timer-display" class="timer-box">
+                ⏱️ 45:00
+            </div>
+            <div class="progress-box">
+                <div class="progress-bar-bg">
+                    <div id="progress-fill" class="progress-bar-fill"></div>
+                </div>
+                <span id="progress-text" class="progress-text">0/19 câu (0%)</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="top-banner">
+        <h1>-- ĐỊA LÝ HỌC --</h1> 
+        <h1>TRUNG HỌC CƠ SỞ VÀ TRUNG HỌC PHỔ THÔNG</h1><br>
+        <p>Học Tập Mỗi Ngày Là Một Niềm Vui!</p>
+    </div>
+
+    <div class="main-container">
+ 
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('quiz-tab', this)">Làm bài</button>
+            <button class="tab-btn" onclick="switchTab('matrix-tab', this)">Ma trận và đặc tả</button>
+        </div>
+
+
+        <div id="quiz-tab" class="tab-content active">
+       
+            <div id="info-section" class="card-box">
+                <h3>Thông tin học sinh</h3>
+                <div class="form-group">
+                    <input type="text" id="student-name" class="form-control" placeholder="Họ và tên">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="student-class" class="form-control" placeholder="Lớp">
+                </div>
+                <p class="info-desc">
+                    Bài gồm: Phần I (12 câu nhiều lựa chọn, 3,0đ) · Phần II (2 câu Đúng – Sai, 2,0đ) · Phần III (4 câu trả lời ngắn, 2,0đ) · Phần IV (tự luận, 3,0đ – tự chấm theo thang điểm sau khi nộp).
+                </p>
+                <button class="btn-green" onclick="startQuiz()">Bắt đầu làm bài</button>
+            </div>
+
+            
+            <form id="quiz-form" style="display: none;" onchange="updateProgress()" oninput="updateProgress()">
+                
+                <!-- PHẦN I -->
+                <div class="section-header">Phần I. Câu hỏi trắc nghiệm nhiều lựa chọn (12 câu - 3,0 điểm)</div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 1 (Biết): Vùng Đồng bằng sông Cửu Long gồm bao nhiêu tỉnh và thành phố trực thuộc Trung ương?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq1" value="A"> A. 11 tỉnh và 1 thành phố.</label>
+                        <label class="option-item"><input type="radio" name="mcq1" value="B"> B. 12 tỉnh và 1 thành phố.</label>
+                        <label class="option-item"><input type="radio" name="mcq1" value="C"> C. 13 tỉnh và 1 thành phố.</label>
+                        <label class="option-item"><input type="radio" name="mcq1" value="D"> D. 10 tỉnh và 2 thành phố.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 2 (Biết): Diện tích tự nhiên của vùng Đồng bằng sông Cửu Long năm 2021 là bao nhiêu?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq2" value="A"> A. Hơn 40,9 nghìn km².</label>
+                        <label class="option-item"><input type="radio" name="mcq2" value="B"> B. Hơn 33,0 nghìn km².</label>
+                        <label class="option-item"><input type="radio" name="mcq2" value="C"> C. Hơn 23,5 nghìn km².</label>
+                        <label class="option-item"><input type="radio" name="mcq2" value="D"> D. Hơn 50,2 nghìn km².</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 3 (Biết): Loại đất chiếm diện tích lớn nhất trong các loại đất chính ở Đồng bằng sông Cửu Long là gì?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq3" value="A"> A. Đất phù sa sông (1,2 triệu ha).</label>
+                        <label class="option-item"><input type="radio" name="mcq3" value="B"> B. Đất phèn (1,6 triệu ha).</label>
+                        <label class="option-item"><input type="radio" name="mcq3" value="C"> C. Đất mặn (750 nghìn ha).</label>
+                        <label class="option-item"><input type="radio" name="mcq3" value="D"> D. Đất cát duyên hải.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 4 (Biết): Đô thị nào sau đây là thành phố trực thuộc Trung ương của vùng Đồng bằng sông Cửu Long?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq4" value="A"> A. Mỹ Tho.</label>
+                        <label class="option-item"><input type="radio" name="mcq4" value="B"> B. Cần Thơ.</label>
+                        <label class="option-item"><input type="radio" name="mcq4" value="C"> C. Rạch Giá.</label>
+                        <label class="option-item"><input type="radio" name="mcq4" value="D"> D. Cà Mau.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 5 (Biết): Khí hậu vùng Đồng bằng sông Cửu Long mang đặc điểm nào sau đây?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq5" value="A"> A. Nhiệt đới ẩm gió mùa có mùa đông lạnh.</label>
+                        <label class="option-item"><input type="radio" name="mcq5" value="B"> B. Cận xích đạo gió mùa với mùa khô và mưa rõ rệt.</label>
+                        <label class="option-item"><input type="radio" name="mcq5" value="C"> C. Ôn đới hải dương mưa quanh năm.</label>
+                        <label class="option-item"><input type="radio" name="mcq5" value="D"> D. Khô hạn quanh năm nhiệt độ thấp.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 6 (Biết): Năm 2021, ngành nông nghiệp, lâm nghiệp và thủy sản đóng góp bao nhiêu % GRDP của vùng?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq6" value="A"> A. Hơn 20,0%.</label>
+                        <label class="option-item"><input type="radio" name="mcq6" value="B"> B. Hơn 32,0%.</label>
+                        <label class="option-item"><input type="radio" name="mcq6" value="C"> C. Hơn 45,0%.</label>
+                        <label class="option-item"><input type="radio" name="mcq6" value="D"> D. Hơn 50,0%.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 7 (Hiểu): Mùa khô kéo dài kết hợp với biến đổi khí hậu gây ra khó khăn nghiêm trọng nhất nào ở ĐBSCL?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq7" value="A"> A. Sạt lở núi dốc và lũ quét dồn dập.</label>
+                        <label class="option-item"><input type="radio" name="mcq7" value="B"> B. Thiếu nước ngọt và gia tăng xâm nhập mặn sâu vào đất liền.</label>
+                        <label class="option-item"><input type="radio" name="mcq7" value="C"> C. Động đất và sóng thần ven biển.</label>
+                        <label class="option-item"><input type="radio" name="mcq7" value="D"> D. Rét hại gây chết lúa mùa.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 8 (Hiểu): Nguyên nhân chủ yếu giúp ĐBSCL trở thành vùng trồng cây ăn quả lớn nhất cả nước là gì?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq8" value="A"> A. Đất phù sa màu mỡ và khí hậu cận xích đạo ấm áp quanh năm.</label>
+                        <label class="option-item"><input type="radio" name="mcq8" value="B"> B. Địa hình đồi núi cao thoát nước tốt.</label>
+                        <label class="option-item"><input type="radio" name="mcq8" value="C"> C. Đất đỏ bazán diện tích rộng lớn.</label>
+                        <label class="option-item"><input type="radio" name="mcq8" value="D"> D. Mạng lưới đường bộ cao tốc hoàn thiện nhất.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 9 (Hiểu): Ngành công nghiệp nào chiếm tỉ trọng cao nhất trong cơ cấu công nghiệp của vùng ĐBSCL?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq9" value="A"> A. Khai thác than đá và quặng sắt.</label>
+                        <label class="option-item"><input type="radio" name="mcq9" value="B"> B. Cơ khí luyện kim và chế tạo ô tô.</label>
+                        <label class="option-item"><input type="radio" name="mcq9" value="C"> C. Sản xuất, chế biến thực phẩm.</label>
+                        <label class="option-item"><input type="radio" name="mcq9" value="D"> D. Hóa chất phân bón nặng.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 10 (Hiểu): Loại hình vận tải có ưu thế và khối lượng vận chuyển hàng hóa lớn nhất ở ĐBSCL là gì?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq10" value="A"> A. Vận tải đường sắt nội vùng.</label>
+                        <label class="option-item"><input type="radio" name="mcq10" value="B"> B. Vận tải đường thủy nội địa.</label>
+                        <label class="option-item"><input type="radio" name="mcq10" value="C"> C. Vận tải đường ống khí đốt.</label>
+                        <label class="option-item"><input type="radio" name="mcq10" value="D"> D. Vận tải đường hàng không.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 11 (Vận dụng): Việc đẩy mạnh phát triển nông nghiệp hàng hóa chất lượng cao ở ĐBSCL nhằm mục đích chính nào?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq11" value="A"> A. Nâng cao giá trị nông sản và đáp ứng thị trường xuất khẩu.</label>
+                        <label class="option-item"><input type="radio" name="mcq11" value="B"> B. Thay thế hoàn toàn ngành trồng lúa bằng chăn nuôi.</label>
+                        <label class="option-item"><input type="radio" name="mcq11" value="C"> C. Giảm tỉ lệ lao động nông thôn về 0%.</label>
+                        <label class="option-item"><input type="radio" name="mcq11" value="D"> D. Mở rộng diện tích đất hoang hóa.</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 12 (Vận dụng): Giải pháp lâu dài mang tính bền vững để sống chung với lũ và hạn mặn ở ĐBSCL là gì?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="mcq12" value="A"> A. Đắp đê bao khép kín toàn bộ diện tích đồng bằng.</label>
+                        <label class="option-item"><input type="radio" name="mcq12" value="B"> B. Chuyển đổi cơ cấu cây trồng, mùa vụ thích ứng linh hoạt với tự nhiên.</label>
+                        <label class="option-item"><input type="radio" name="mcq12" value="C"> C. Di dời toàn bộ dân cư khỏi vùng sinh thái mặn.</label>
+                        <label class="option-item"><input type="radio" name="mcq12" value="D"> D. Ngừng khai thác thủy sản trong mùa khô.</label>
+                    </div>
+                </div>
+
+                <!-- PHẦN II -->
+                <div class="section-header">Phần II. Câu hỏi trắc nghiệm Đúng - Sai (2 câu - 2,0 điểm)</div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 1: Cho đoạn thông tin sau về tài nguyên tự nhiên vùng ĐBSCL:</div>
+                    <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 12px;">"Đồng bằng sông Cửu Long nằm ở hạ lưu sông Mê Công với hai nhánh chính là sông Tiền và sông Hậu cùng hệ thống kênh rạch chằng chịt. Vùng có bờ biển rộng, rừng ngập mặn ven biển và tràm ở Tứ giác Long Xuyên, Đồng Tháp Mười."</p>
+                    <table class="tf-table">
+                        <tr><th>Phát biểu</th><th>Đúng</th><th>Sai</th></tr>
+                        <tr>
+                            <td>a) Hệ thống sông ngòi kênh rạch tạo thuận lợi cho giao thông đường thủy và nuôi trồng thủy sản.</td>
+                            <td class="center"><input type="radio" name="tf1_a" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf1_a" value="Sai"></td>
+                        </tr>
+                        <tr>
+                            <td>b) Rừng ngập mặn ở ĐBSCL không có giá trị đối với bảo tồn sinh thái và du lịch.</td>
+                            <td class="center"><input type="radio" name="tf1_b" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf1_b" value="Sai"></td>
+                        </tr>
+                        <tr>
+                            <td>c) Hai nhánh sông Tiền và sông Hậu cung cấp nguồn nước ngọt và phù sa dồi dào cho đồng bằng.</td>
+                            <td class="center"><input type="radio" name="tf1_c" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf1_c" value="Sai"></td>
+                        </tr>
+                        <tr>
+                            <td>d) ĐBSCL không có khả năng phát triển các ngành kinh tế biển và cảng biển.</td>
+                            <td class="center"><input type="radio" name="tf1_d" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf1_d" value="Sai"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 2: Cho thông tin về Vùng kinh tế trọng điểm ĐBSCL:</div>
+                    <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 12px;">"Vùng kinh tế trọng điểm ĐBSCL gồm Cần Thơ, An Giang, Kiên Giang và Cà Mau. Vùng đóng góp lớn vào GRDP toàn vùng, có thế mạnh nổi bật về dịch vụ, du lịch, nông nghiệp hàng hóa và chuyển giao công nghệ."</p>
+                    <table class="tf-table">
+                        <tr><th>Phát biểu</th><th>Đúng</th><th>Sai</th></tr>
+                        <tr>
+                            <td>a) Cần Thơ là cực tăng trưởng và trung tâm tài chính, ngân hàng, đào tạo của vùng.</td>
+                            <td class="center"><input type="radio" name="tf2_a" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf2_a" value="Sai"></td>
+                        </tr>
+                        <tr>
+                            <td>b) Ngành công nghiệp chiếm tỉ trọng cao nhất trong cơ cấu GRDP của Vùng kinh tế trọng điểm ĐBSCL.</td>
+                            <td class="center"><input type="radio" name="tf2_b" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf2_b" value="Sai"></td>
+                        </tr>
+                        <tr>
+                            <td>c) Phú Quốc (Kiên Giang) và Cần Thơ có các cảng hàng không quan trọng của vùng.</td>
+                            <td class="center"><input type="radio" name="tf2_c" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf2_c" value="Sai"></td>
+                        </tr>
+                        <tr>
+                            <td>d) Vùng kinh tế trọng điểm không giữ vai trò gì về an ninh quốc phòng ven biển và biên giới.</td>
+                            <td class="center"><input type="radio" name="tf2_d" value="Đúng"></td>
+                            <td class="center"><input type="radio" name="tf2_d" value="Sai"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- PHẦN III -->
+                <div class="section-header">Phần III. Câu hỏi trả lời ngắn (4 câu - 2,0 điểm)</div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 1: Tỉ lệ đóng góp lượng gạo xuất khẩu của ĐBSCL so với cả nước năm 2021 là bao nhiêu %?</div>
+                    <input type="text" id="short1" class="form-control" placeholder="Nhập câu trả lời (Ví dụ: 80%)...">
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 2: Hãy kể tên 1 loại khoáng sản chính được khai thác nhiều ở tỉnh Kiên Giang dùng cho sản xuất xi măng?</div>
+                    <input type="text" id="short2" class="form-control" placeholder="Nhập tên khoáng sản...">
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 3: Mật độ dân số trung bình của vùng ĐBSCL năm 2021 là bao nhiêu người/km²?</div>
+                    <input type="text" id="short3" class="form-control" placeholder="Nhập số mật độ...">
+                </div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 4: Tên trung tâm nhiệt điện khí lớn ở tỉnh Cà Mau có công suất 1500 MW là gì?</div>
+                    <input type="text" id="short4" class="form-control" placeholder="Nhập tên nhà máy/trung tâm...">
+                </div>
+
+                <!-- PHẦN IV -->
+                <div class="section-header">Phần IV. Câu hỏi tự luận (1 câu - 3,0 điểm)</div>
+
+                <div class="question-card">
+                    <div class="question-title">Câu 1: Trình bày và phân tích những thế mạnh nổi bật về tự nhiên giúp Đồng bằng sông Cửu Long trở thành vùng sản xuất lương thực và nuôi trồng thủy sản lớn nhất Việt Nam.</div>
+                    <textarea id="essay1" class="form-control" rows="6" placeholder="Trình bày bài làm tự luận..."></textarea>
+                </div>
+
+                <button type="button" class="btn-green" style="width: 100%; margin-top: 20px;" onclick="submitQuiz()">Nộp bài kiểm tra</button>
+            </form>
+
+            <!-- Khung hiển thị kết quả -->
+            <div id="result-panel" class="result-panel">
+                <div class="result-score" id="score-display"></div>
+                <div class="result-details" id="feedback-display"></div>
+            </div>
+        </div>
+
+        <!-- TAB MA TRẬN VÀ ĐẶC TẢ -->
+        <div id="matrix-tab" class="tab-content">
+            <div class="card-box">
+                <h3>MA TRẬN & BẢN ĐẶC TẢ ĐỀ KIỂM TRA ĐỊNH KỲ</h3>
+                <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 15px;">Tuân thủ quy định Công văn 7991/BGDĐT-GDTrH của Bộ Giáo dục và Đào tạo.</p>
+                
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Dạng thức</th>
+                            <th colspan="3">Mức độ đánh giá</th>
+                            <th rowspan="2">Tổng số câu</th>
+                            <th rowspan="2">Điểm số</th>
+                        </tr>
+                        <tr>
+                            <th>Nhận biết</th>
+                            <th>Thông hiểu</th>
+                            <th>Vận dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;">I. Trắc nghiệm 4 lựa chọn</td>
+                            <td>6 câu</td>
+                            <td>4 câu</td>
+                            <td>2 câu</td>
+                            <td>12 câu</td>
+                            <td>3,0 điểm</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">II. Trắc nghiệm Đúng/Sai</td>
+                            <td>1 câu (4 ý)</td>
+                            <td>1 câu (4 ý)</td>
+                            <td>0</td>
+                            <td>2 câu (8 ý)</td>
+                            <td>2,0 điểm</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">III. Trả lời ngắn</td>
+                            <td>2 câu</td>
+                            <td>2 câu</td>
+                            <td>0</td>
+                            <td>4 câu</td>
+                            <td>2,0 điểm</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">IV. Tự luận</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>1 câu</td>
+                            <td>1 câu</td>
+                            <td>3,0 điểm</td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: var(--input-bg);">
+                            <td style="text-align: left;">Tổng điểm / Tỉ lệ %</td>
+                            <td>40%</td>
+                            <td>30%</td>
+                            <td>30%</td>
+                            <td>20 câu</td>
+                            <td>10,0 điểm</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let timerInterval = null;
+        let timeRemaining = 45 * 60; // 45 phút = 2700 giây
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function startQuiz() {
+            const name = document.getElementById('student-name').value.trim();
+            const sClass = document.getElementById('student-class').value.trim();
+            if(!name || !sClass) {
+                alert('Vui lòng nhập Họ và tên và Lớp trước khi bắt đầu!');
+                return;
+            }
+            document.getElementById('info-section').style.display = 'none';
+            document.getElementById('quiz-form').style.display = 'block';
+            document.getElementById('sticky-tracker').style.display = 'block';
+            
+            // Bắt đầu đếm ngược
+            startTimer();
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer-display');
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                let minutes = Math.floor(timeRemaining / 60);
+                let seconds = timeRemaining % 60;
+                
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                
+                timerDisplay.innerHTML = `⏱️ ${minutes}:${seconds}`;
+                
+                // Cảnh báo khi còn dưới 5 phút
+                if (timeRemaining <= 300) {
+                    timerDisplay.classList.add('warning');
+                }
+
+                // Hết giờ -> Tự động nộp bài
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Đã hết thời gian 45 phút! Hệ thống đang tự động nộp bài.');
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateProgress() {
+            let answeredCount = 0;
+            const totalQuestions = 19; // 12 MCQ + 2 TF + 4 Short + 1 Essay
+
+            // Check 12 MCQ
+            for(let i = 1; i <= 12; i++) {
+                if(document.querySelector(`input[name="mcq${i}"]:checked`)) answeredCount++;
+            }
+
+            // Check 2 TF
+            if(document.querySelector(`input[name="tf1_a"]:checked`) || document.querySelector(`input[name="tf1_b"]:checked`)) answeredCount++;
+            if(document.querySelector(`input[name="tf2_a"]:checked`) || document.querySelector(`input[name="tf2_b"]:checked`)) answeredCount++;
+
+            // Check 4 Short
+            for(let i = 1; i <= 4; i++) {
+                if(document.getElementById(`short${i}`).value.trim() !== '') answeredCount++;
+            }
+
+            // Check Essay
+            if(document.getElementById('essay1').value.trim() !== '') answeredCount++;
+
+            let percent = Math.round((answeredCount / totalQuestions) * 100);
+            document.getElementById('progress-fill').style.width = percent + '%';
+            document.getElementById('progress-text').innerText = `${answeredCount}/${totalQuestions} câu (${percent}%)`;
+        }
+
+        function submitQuiz() {
+            // Dừng đếm ngược
+            if (timerInterval) clearInterval(timerInterval);
+
+            let score = 0;
+
+            // 1. Chấm Phần I (12 câu MCQ - mỗi câu 0.25 điểm = 3.0đ)
+            const mcqAnswers = {
+                mcq1: 'B', mcq2: 'A', mcq3: 'B', mcq4: 'B',
+                mcq5: 'B', mcq6: 'B', mcq7: 'B', mcq8: 'A',
+                mcq9: 'C', mcq10: 'B', mcq11: 'A', mcq12: 'B'
+            };
+
+            let mcqCorrect = 0;
+            for(let key in mcqAnswers) {
+                let sel = document.querySelector(`input[name="${key}"]:checked`);
+                if(sel && sel.value === mcqAnswers[key]) {
+                    mcqCorrect++;
+                }
+            }
+            score += mcqCorrect * 0.25;
+
+            // 2. Chấm Phần II (2 câu T/F - mỗi câu 1.0đ)
+            const tfKey1 = { tf1_a: 'Đúng', tf1_b: 'Sai', tf1_c: 'Đúng', tf1_d: 'Sai' };
+            const tfKey2 = { tf2_a: 'Đúng', tf2_b: 'Sai', tf2_c: 'Đúng', tf2_d: 'Sai' };
+
+            function getTFScore(keyObj) {
+                let correct = 0;
+                for(let k in keyObj) {
+                    let sel = document.querySelector(`input[name="${k}"]:checked`);
+                    if(sel && sel.value === keyObj[k]) correct++;
+                }
+                if(correct === 1) return 0.1;
+                if(correct === 2) return 0.25;
+                if(correct === 3) return 0.5;
+                if(correct === 4) return 1.0;
+                return 0;
+            }
+
+            score += getTFScore(tfKey1) + getTFScore(tfKey2);
+
+            // 3. Chấm Phần III (4 câu ngắn - mỗi câu 0.5đ = 2.0đ)
+            let s1 = document.getElementById('short1').value.trim();
+            if(s1.includes('80')) score += 0.5;
+
+            let s2 = document.getElementById('short2').value.toLowerCase().trim();
+            if(s2.includes('đá vôi') || s2.includes('vôi')) score += 0.5;
+
+            let s3 = document.getElementById('short3').value.trim();
+            if(s3.includes('426')) score += 0.5;
+
+            let s4 = document.getElementById('short4').value.toLowerCase().trim();
+            if(s4.includes('cà mau')) score += 0.5;
+
+            // Hiển thị kết quả
+            document.getElementById('result-panel').style.display = 'block';
+            document.getElementById('score-display').innerText = `Kết quả Trắc nghiệm: ${score.toFixed(2)} / 7.0 điểm`;
+            
+            let feedback = `<b>ĐÁP ÁN CHI TIẾT & HƯỚNG DẪN TỰ CHẤM:</b><br><br>`;
+            feedback += `<b>Phần I (MCQ):</b> Đúng ${mcqCorrect}/12 câu.<br>`;
+            feedback += `<b>Phần III (Trả lời ngắn):</b><br>`;
+            feedback += `- Câu 1: 80% (xuất khẩu gạo)<br>`;
+            feedback += `- Câu 2: Đá vôi (Kiên Giang)<br>`;
+            feedback += `- Câu 3: 426 người/km²<br>`;
+            feedback += `- Câu 4: Nhiệt điện khí Cà Mau (1 500 MW)<br><br>`;
+            feedback += `<b>Phần IV (Tự luận - 3,0 điểm thang hướng dẫn):</b><br>`;
+            feedback += `- <i>Địa hình, đất:</i> Đồng bằng rộng, bằng phẳng, đất phù sa sông hơn 1,2 triệu ha phì nhiêu (1,0đ).<br>`;
+            feedback += `- <i>Khí hậu, sông ngòi:</i> Cận xích đạo ấm áp quanh năm; nguồn nước sông Tiền, sông Hậu dồi dào (1,0đ).<br>`;
+            feedback += `- <i>Biển & mặt nước:</i> Bờ biển dài, hơn nửa triệu ha mặt nước nuôi trồng thủy sản, sinh thái rừng ngập mặn đa dạng (1,0đ).`;
+
+            document.getElementById('feedback-display').innerHTML = feedback;
+            document.getElementById('result-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
